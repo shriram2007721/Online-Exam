@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_NAME = 'exam-management-api'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Cloning source code from repository..."
+            }
+        }
+
+        stage('Compile Application') {
+            steps {
+                echo "Compiling ${env.PROJECT_NAME} backend service..."
+                bat 'node project1-build/app.js' 
+            }
+        }
+
+        stage('Package Artifacts') {
+            steps {
+                echo "Packaging compiled files into a distribution bundle..."
+                bat 'echo API-Distribution-Files-Verification > project1-build/dist-bundle.txt'
+                archiveArtifacts artifacts: 'project1-build/dist-bundle.txt', fingerprint: true
+            }
+        }
+    }
+}
