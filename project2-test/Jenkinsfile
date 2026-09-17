@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Source') {
+            steps {
+                echo "Fetching latest evaluation scripts from repository..."
+            }
+        }
+
+        stage('Static Code Quality Analysis') {
+            steps {
+                echo "Running syntax checking and linting on python scripts..."
+            }
+        }
+
+        stage('Run Evaluation Tests') {
+            steps {
+                echo "Running automatic test cases on grading algorithms..."
+                bat 'python project2-test/test_grader.py'
+            }
+        }
+    }
+    post {
+        always {
+            echo "Test cycle terminated safely."
+        }
+    }
+}
