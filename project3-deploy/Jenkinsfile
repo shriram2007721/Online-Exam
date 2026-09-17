@@ -1,33 +1,36 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'DEPLOY_TARGET', choices: ['Staging-Sandbox', 'Production-Live'], description: 'Select the target server cluster environment')
-    }
-
     stages {
-        stage('Checkout Deployment Context') {
+
+        stage('Checkout') {
             steps {
-                echo "Fetching deployment automation scripts..."
+                echo 'Source code checkout completed.'
             }
         }
 
-        stage('Environment Verification') {
-            steps {
-                echo "Verifying server status for target environment: ${params.DEPLOY_TARGET}"
+        stage('Parallel Checks') {
+
+            parallel {
+
+                stage('Frontend Check') {
+                    steps {
+                        bat '"C:\\Users\\shrir\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" project3-deploy/frontend_check.py'
+                    }
+                }
+
+                stage('Backend Check') {
+                    steps {
+                        bat '"C:\\Users\\shrir\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" project3-deploy/backend_check.py'
+                    }
+                }
             }
         }
 
-        stage('Execute System Deployment') {
+        stage('Summary') {
             steps {
-                echo "Deploying the examination portal to ${params.DEPLOY_TARGET} server..."
-                bat "project3-deploy/deploy.bat ${params.DEPLOY_TARGET}"
+                echo 'Both frontend and backend checks are complete.'
             }
-        }
-    }
-    post {
-        success {
-            echo "SUCCESS: Online Examination System is now LIVE on environment cluster: ${params.DEPLOY_TARGET}."
         }
     }
 }
