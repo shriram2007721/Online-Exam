@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'DEPLOY_TARGET', choices: ['Staging-Sandbox', 'Production-Live'], description: 'Select the target server cluster environment')
+    }
+
+    stages {
+        stage('Checkout Deployment Context') {
+            steps {
+                echo "Fetching deployment automation scripts..."
+            }
+        }
+
+        stage('Environment Verification') {
+            steps {
+                echo "Verifying server status for target environment: ${params.DEPLOY_TARGET}"
+            }
+        }
+
+        stage('Execute System Deployment') {
+            steps {
+                echo "Deploying the examination portal to ${params.DEPLOY_TARGET} server..."
+                bat "project3-deploy/deploy.bat ${params.DEPLOY_TARGET}"
+            }
+        }
+    }
+    post {
+        success {
+            echo "SUCCESS: Online Examination System is now LIVE on environment cluster: ${params.DEPLOY_TARGET}."
+        }
+    }
+}
