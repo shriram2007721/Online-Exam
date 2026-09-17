@@ -1,29 +1,30 @@
 pipeline {
     agent any
 
-    environment {
-        PROJECT_NAME = 'exam-management-api'
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Select the deployment environment'
+        )
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo "Cloning source code from repository..."
+                echo 'Source code checkout completed.'
             }
         }
 
-        stage('Compile Application') {
+        stage('Show Parameter') {
             steps {
-                echo "Compiling ${env.PROJECT_NAME} backend service..."
-                bat 'node project1-build/app.js' 
+                echo "Selected environment: ${params.ENVIRONMENT}"
             }
         }
 
-        stage('Package Artifacts') {
+        stage('Build for Environment') {
             steps {
-                echo "Packaging compiled files into a distribution bundle..."
-                bat 'echo API-Distribution-Files-Verification > project1-build/dist-bundle.txt'
-                archiveArtifacts artifacts: 'project1-build/dist-bundle.txt', fingerprint: true
+                echo "Building the application for the ${params.ENVIRONMENT} environment..."
             }
         }
     }
