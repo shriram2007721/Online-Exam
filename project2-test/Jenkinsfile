@@ -12,7 +12,7 @@ pipeline {
 
         stage('Generate Report') {
             steps {
-                bat 'python project2-test/app.py'
+                bat 'py project2-test/app.py'
             }
         }
 
